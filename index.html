@@ -1,32 +1,518 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome!</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PIMPOON 3D — Product Showcase</title>
+    <meta name="description" content="Interactive 3D product showcase hosted on GitHub Pages." />
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #fce4ec;
-            color: #ffffff;
-            margin: 0;
-            padding: 0;
+        :root{
+            --bg0:#080b12;
+            --bg1:#0f1420;
+            --acc1:#7b5cff;
+            --acc2:#00e8b9;
+            --txt:#e6edf3;
+            --muted:#9aa5b1;
+            --glass:rgba(255,255,255,.06);
+            --border:rgba(255,255,255,.12);
+            --shadow:0 20px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);
+            --radius:16px;
         }
-        h1 {
-            margin-top: 50px;
+        *{box-sizing:border-box}
+        html,body{height:100%}
+        body{
+            margin:0;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+            color:var(--txt);
+            background:
+                radial-gradient(1200px 600px at 10% -10%, rgba(0,232,185,.12), transparent 60%),
+                radial-gradient(1000px 500px at 110% 10%, rgba(123,92,255,.12), transparent 60%),
+                linear-gradient(180deg, var(--bg0), var(--bg1) 60%);
+            background-attachment: fixed;
         }
-        p {
-            font-size: 1.2em;
+        a { color: var(--acc2); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        header{
+            position:sticky; top:0; z-index:50;
+            backdrop-filter:saturate(160%) blur(10px);
+            background:linear-gradient(180deg, rgba(8,11,18,.85), rgba(8,11,18,.5));
+            border-bottom:1px solid var(--border);
         }
-        .heart {
-            font-size: 3em;
-            color: #0d7e60;
+        .nav{
+            max-width:1200px; margin:auto; padding:14px 20px;
+            display:flex; align-items:center; justify-content:space-between; gap:20px;
+        }
+        .brand{
+            display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.3px;
+        }
+        .logo{
+            width:34px; height:34px; border-radius:10px;
+            background: conic-gradient(from 210deg, var(--acc1), var(--acc2));
+            box-shadow: 0 8px 20px rgba(0,232,185,.25), 0 8px 30px rgba(123,92,255,.2);
+        }
+        .nav a{ color:var(--txt); opacity:.9; font-weight:600; }
+        .navlinks{ display:flex; gap:18px; align-items:center; }
+        .cta{
+            padding:10px 14px; border-radius:12px; background:linear-gradient(135deg,var(--acc2),#2fdacb);
+            color:#051816; font-weight:800; box-shadow:0 10px 22px rgba(0,232,185,.28); border:0;
+        }
+        .cta:hover{ filter:saturate(115%); text-decoration:none }
+
+        .hero{
+            max-width:1200px; margin:40px auto 24px; padding:24px 20px 0;
+            display:grid; grid-template-columns:1.2fr .8fr; gap:24px; align-items:center;
+        }
+        .hero h1{
+            margin:0 0 12px; font-size:clamp(28px, 4.2vw, 56px); line-height:1.05;
+            letter-spacing:-.02em;
+            background: linear-gradient(120deg, #fff, #e6edff 40%, #b5c4ff);
+            -webkit-background-clip:text; background-clip:text; color:transparent;
+        }
+        .hero p{ margin:0 0 18px; color:var(--muted); font-size:1.05rem }
+        .hero .stack{
+            display:flex; gap:10px; flex-wrap:wrap;
+        }
+        .pill{
+            padding:8px 12px; border-radius:999px; border:1px solid var(--border);
+            background:var(--glass); color:#cfe8ff; font-weight:700; font-size:.9rem;
+        }
+        .heroCanvas{
+            min-height:280px; height: 38vh; border-radius:20px; border:1px solid var(--border);
+            background: radial-gradient(1000px 500px at 120% -10%, rgba(123,92,255,.18), transparent 60%), var(--glass);
+            box-shadow: var(--shadow); position:relative; overflow:hidden;
+        }
+
+        section{ padding:40px 20px }
+        .section-head{
+            max-width:1200px; margin:0 auto 16px; display:flex; align-items:end; justify-content:space-between; gap:16px;
+        }
+        .section-head h2{ margin:0; font-size:1.8rem }
+        .muted{ color:var(--muted) }
+
+        .grid{
+            max-width:1200px; margin:0 auto; display:grid; gap:18px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+        .card{
+            border:1px solid var(--border);
+            background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04));
+            border-radius:var(--radius);
+            overflow:hidden; box-shadow: var(--shadow);
+            display:flex; flex-direction:column;
+        }
+        .viewer{
+            position:relative; aspect-ratio: 16/10; background: #0b0f14;
+            border-bottom:1px solid var(--border);
+        }
+        canvas.three{ width:100%; height:100%; display:block; }
+        .badge{
+            position:absolute; top:10px; left:10px; z-index:2;
+            padding:6px 10px; border-radius:999px; background:rgba(0,232,185,.12); color:var(--acc2);
+            border:1px solid rgba(0,232,185,.35); font-size:.78rem; font-weight:800;
+            backdrop-filter: blur(6px);
+        }
+        .loader{
+            position:absolute; inset:0; display:grid; place-items:center; background:linear-gradient(180deg, rgba(10,14,21,.35), rgba(10,14,21,.15));
+        }
+        .spinner{
+            width:26px; height:26px; border-radius:50%; border:3px solid rgba(255,255,255,.2); border-top-color:var(--acc2);
+            animation:spin 1s linear infinite;
+        }
+        @keyframes spin{ to { transform:rotate(360deg) } }
+
+        .card-body{ padding:14px 14px 6px }
+        .title{ margin:0 0 6px; font-size:1.05rem }
+        .desc{ margin:0 0 12px; color:var(--muted); font-size:.95rem }
+        .actions{
+            display:flex; gap:10px; padding:0 14px 14px; margin-top:auto; flex-wrap:wrap;
+        }
+        .btn{
+            display:inline-flex; align-items:center; gap:8px; border:1px solid var(--border); padding:10px 12px;
+            border-radius:12px; background:var(--glass); color:var(--txt); font-weight:700;
+        }
+        .btn.primary{
+            border-color:transparent; background:linear-gradient(135deg, var(--acc1), #6bf1d8);
+            color:#07121a; box-shadow:0 10px 22px rgba(123,92,255,.22), 0 10px 22px rgba(0,232,185,.18);
+        }
+        .btn:hover{ text-decoration:none; filter:saturate(115%) }
+
+        footer{
+            border-top:1px solid var(--border); color:var(--muted); text-align:center; padding:24px 12px 40px;
+        }
+
+        @media (max-width: 860px){
+            .hero{ grid-template-columns:1fr; margin-top:20px }
+            .heroCanvas{ order:-1; height: 38vh; min-height:240px }
         }
     </style>
 </head>
 <body>
-    <h1>Welcome to My Webpage!</h1>
-    <p>Have a lovely day!</p>
+    <header>
+        <nav class="nav">
+            <div class="brand">
+                <div class="logo" aria-hidden="true"></div>
+                <div>PIMPOON 3D</div>
+            </div>
+            <div class="navlinks">
+                <a href="#gallery">Gallery</a>
+                <a href="#about">About</a>
+                <a href="#contact" class="cta">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero" aria-label="Intro">
+            <div>
+                <h1>Interactive 3D Product Showcase</h1>
+                <p>High‑fidelity, realtime WebGL viewers for your products. Spin, zoom, and explore directly on GitHub Pages.</p>
+                <div class="stack">
+                    <span class="pill">three.js</span>
+                    <span class="pill">glTF/GLB</span>
+                    <span class="pill">PBR</span>
+                    <span class="pill">Responsive</span>
+                </div>
+                <div style="margin-top:16px">
+                    <a href="#gallery" class="btn primary">Explore Gallery</a>
+                </div>
+            </div>
+            <div class="heroCanvas viewer" id="heroViewer" aria-label="Hero 3D preview">
+                <div class="loader"><div class="spinner"></div></div>
+            </div>
+        </section>
+
+        <section id="gallery" aria-label="3D Product Gallery">
+            <div class="section-head">
+                <h2>Gallery</h2>
+                <div class="muted">Replace the model paths with your own .glb/.gltf files</div>
+            </div>
+            <div class="grid">
+
+                <!-- Product 1 -->
+                <article class="card">
+                    <div class="viewer" data-model="assets/models/chair.glb" data-name="Aero Chair">
+                        <span class="badge">New</span>
+                        <div class="loader"><div class="spinner"></div></div>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="title">Aero Chair</h3>
+                        <p class="desc">Ergonomic design with breathable mesh. Explore materials and details in 3D.</p>
+                    </div>
+                    <div class="actions">
+                        <a class="btn primary" href="assets/models/chair.glb" download>Download GLB</a>
+                        <a class="btn" href="#contact">Inquire</a>
+                    </div>
+                </article>
+
+                <!-- Product 2 -->
+                <article class="card">
+                    <div class="viewer" data-model="assets/models/sneaker.glb" data-name="Flux Sneaker">
+                        <span class="badge">Hot</span>
+                        <div class="loader"><div class="spinner"></div></div>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="title">Flux Sneaker</h3>
+                        <p class="desc">Performance knit upper with responsive sole. Rotate to see the silhouette.</p>
+                    </div>
+                    <div class="actions">
+                        <a class="btn primary" href="assets/models/sneaker.glb" download>Download GLB</a>
+                        <a class="btn" href="#contact">Inquire</a>
+                    </div>
+                </article>
+
+                <!-- Product 3 -->
+                <article class="card">
+                    <div class="viewer" data-model="assets/models/headphones.glb" data-name="Nebula Headphones">
+                        <span class="badge">4K</span>
+                        <div class="loader"><div class="spinner"></div></div>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="title">Nebula Headphones</h3>
+                        <p class="desc">Studio-grade drivers with a collapsible frame. Zoom for metal and fabric details.</p>
+                    </div>
+                    <div class="actions">
+                        <a class="btn primary" href="assets/models/headphones.glb" download>Download GLB</a>
+                        <a class="btn" href="#contact">Inquire</a>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <section id="about" aria-label="About">
+            <div class="section-head">
+                <h2>About</h2>
+            </div>
+            <div class="grid" style="grid-template-columns: 1fr;">
+                <div class="card" style="padding:16px 18px;">
+                    <p class="muted" style="margin:0">
+                        This site runs entirely on static GitHub Pages. Models are loaded with three.js and glTF loaders for fast, photoreal 3D on the web.
+                        Place your .glb/.gltf files in assets/models/ and update the data-model attributes above.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" aria-label="Contact">
+            <div class="section-head">
+                <h2>Contact</h2>
+            </div>
+            <div class="grid" style="grid-template-columns: 1fr;">
+                <div class="card" style="padding:16px 18px;">
+                    <p style="margin:0">Email: <a href="mailto:hello@yourdomain.com">hello@yourdomain.com</a></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        © <span id="yr"></span> PIMPOON — All rights reserved.
+    </footer>
+
+    <!-- three.js viewer -->
+    <script type="module">
+        import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+        import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+        import { GLTFLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
+        import { DRACOLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/DRACOLoader.js';
+        import { RoomEnvironment } from 'https://unpkg.com/three@0.160.0/examples/jsm/environments/RoomEnvironment.js';
+
+        const yearEl = document.getElementById('yr');
+        if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+        class CardViewer {
+            constructor(container, modelURL, opts = {}) {
+                this.container = container;
+                this.modelURL = modelURL;
+                this.loop = this.loop.bind(this);
+                this.isVisible = false;
+                this.disposed = false;
+
+                // Scene
+                this.scene = new THREE.Scene();
+                const pmrem = new THREE.PMREMGenerator(this.renderer ?? new THREE.WebGLRenderer());
+                const env = new RoomEnvironment();
+                this.scene.environment = pmrem.fromScene(env, 0.05).texture;
+
+                // Camera
+                this.camera = new THREE.PerspectiveCamera(50, 1, 0.01, 100);
+                this.camera.position.set(0.6, 0.6, 1.6);
+
+                // Renderer
+                this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+                this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+                this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+                this.renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+                this.renderer.shadowMap.enabled = false;
+                this.container.appendChild(this.renderer.domElement);
+                this.renderer.domElement.classList.add('three');
+
+                // Lights (subtle — environment does most of the work)
+                const hemi = new THREE.HemisphereLight(0xffffff, 0x223344, 0.7);
+                this.scene.add(hemi);
+                const dir = new THREE.DirectionalLight(0xffffff, 0.6);
+                dir.position.set(2, 3, 2);
+                this.scene.add(dir);
+
+                // Controls
+                this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+                this.controls.enableDamping = true;
+                this.controls.minDistance = 0.4;
+                this.controls.maxDistance = 5;
+                this.controls.target.set(0, 0.1, 0);
+
+                // Handle resize
+                const resize = () => {
+                    if (this.disposed) return;
+                    const { clientWidth: w, clientHeight: h } = this.container;
+                    if (w === 0 || h === 0) return;
+                    this.camera.aspect = w / h;
+                    this.camera.updateProjectionMatrix();
+                    this.renderer.setSize(w, h, false);
+                };
+                this._resizeHandler = resize;
+                window.addEventListener('resize', resize);
+                resize();
+
+                // Load model
+                this.loadModel(this.modelURL).then(() => {
+                    this.hideLoader();
+                    this.start();
+                }).catch((e) => {
+                    console.error('Model load error:', e);
+                    this.showError('Failed to load model');
+                });
+
+                // Lazy render when visible
+                this.io = new IntersectionObserver((entries) => {
+                    for (const e of entries) {
+                        this.isVisible = e.isIntersecting;
+                        if (this.isVisible) this.start(); else this.stop();
+                    }
+                }, { threshold: 0.2 });
+                this.io.observe(this.container);
+            }
+
+            hideLoader() {
+                const l = this.container.querySelector('.loader');
+                if (l) l.remove();
+            }
+            showError(msg) {
+                this.hideLoader();
+                const div = document.createElement('div');
+                div.style.cssText = 'position:absolute;inset:0;display:grid;place-items:center;color:#f99;font-weight:700;background:rgba(20,0,0,.25)';
+                div.textContent = msg;
+                this.container.appendChild(div);
+            }
+
+            async loadModel(url) {
+                const loader = new GLTFLoader();
+                const draco = new DRACOLoader();
+                draco.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/');
+                loader.setDRACOLoader(draco);
+
+                return new Promise((resolve, reject) => {
+                    loader.load(url, (gltf) => {
+                        this.model = gltf.scene;
+                        this.scene.add(this.model);
+                        this.fitToView(this.model);
+                        resolve();
+                    }, undefined, reject);
+                });
+            }
+
+            fitToView(object3D) {
+                // Center and scale to fit nicely in camera view
+                const box = new THREE.Box3().setFromObject(object3D);
+                const size = new THREE.Vector3();
+                const center = new THREE.Vector3();
+                box.getSize(size);
+                box.getCenter(center);
+                object3D.position.sub(center); // center at origin
+
+                const maxDim = Math.max(size.x, size.y, size.z);
+                const fitDist = (maxDim / (2 * Math.tan(THREE.MathUtils.degToRad(this.camera.fov) / 2)));
+                this.controls.target.set(0, size.y * 0.1, 0);
+                this.camera.position.set(fitDist * 0.9, fitDist * 0.6, fitDist * 1.1);
+                this.camera.near = Math.max(fitDist / 100, 0.01);
+                this.camera.far = fitDist * 10 + 10;
+                this.camera.updateProjectionMatrix();
+            }
+
+            start() {
+                if (this._raf) return;
+                this._raf = requestAnimationFrame(this.loop);
+            }
+            stop() {
+                if (!this._raf) return;
+                cancelAnimationFrame(this._raf);
+                this._raf = null;
+            }
+            loop() {
+                this._raf = requestAnimationFrame(this.loop);
+                this.controls.update();
+                this.renderer.render(this.scene, this.camera);
+            }
+
+            dispose() {
+                this.disposed = true;
+                this.stop();
+                this.io?.disconnect();
+                window.removeEventListener('resize', this._resizeHandler);
+                this.controls.dispose();
+                this.scene.traverse((o) => {
+                    if (o.isMesh) {
+                        o.geometry?.dispose?.();
+                        if (o.material) {
+                            const mats = Array.isArray(o.material) ? o.material : [o.material];
+                            mats.forEach(m => {
+                                for (const k in m) {
+                                    if (m[k] && m[k].isTexture) m[k].dispose();
+                                }
+                                m.dispose?.();
+                            });
+                        }
+                    }
+                });
+                this.renderer.dispose();
+                this.renderer.domElement.remove();
+            }
+        }
+
+        // Initialize hero viewer with a subtle animated torus if no hero model
+        function initHero() {
+            const wrap = document.getElementById('heroViewer');
+            const viewer = new CardViewer(wrap, null);
+            viewer.hideLoader();
+
+            // Replace this with your hero model if desired:
+            // new CardViewer(wrap, 'assets/models/your-hero.glb');
+
+            // Custom minimal scene for hero
+            viewer.scene.clear();
+            const geo = new THREE.TorusKnotGeometry(0.45, 0.16, 220, 40);
+            const mat = new THREE.MeshPhysicalMaterial({
+                color: 0xffffff, metalness: 0.85, roughness: 0.2, transmission: 0, envMapIntensity: 1.0,
+                sheen: 0.2, sheenColor: new THREE.Color('#9edcff')
+            });
+            const mesh = new THREE.Mesh(geo, mat);
+            viewer.scene.add(mesh);
+
+            const light = new THREE.DirectionalLight(0xffffff, 1.2);
+            light.position.set(2, 3, 1.5);
+            viewer.scene.add(new THREE.AmbientLight(0x8899aa, 0.6), light);
+
+            viewer.fitToView(mesh);
+
+            const baseLoop = viewer.loop.bind(viewer);
+            viewer.loop = function(){
+                mesh.rotation.y += 0.005;
+                mesh.rotation.x += 0.0025;
+                baseLoop();
+            };
+            viewer.start();
+        }
+
+        // Initialize all product viewers
+        function initGallery() {
+            const cards = document.querySelectorAll('.viewer[data-model]');
+            const instances = [];
+            for (const el of cards) {
+                const url = el.getAttribute('data-model');
+                const viewer = new CardViewer(el, url);
+                instances.push(viewer);
+            }
+            // Cleanup on page hide
+            window.addEventListener('pagehide', () => instances.forEach(v => v.dispose()));
+        }
+
+        // Basic WebGL capability check
+        function webglOk() {
+            try {
+                const canvas = document.createElement('canvas');
+                return !!(window.WebGLRenderingContext && (
+                    canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
+                ));
+            } catch(e){ return false; }
+        }
+
+        if (!webglOk()) {
+            for (const v of document.querySelectorAll('.viewer .loader')) {
+                v.innerHTML = '<div style="color:#fcc;font-weight:700">WebGL not supported</div>';
+            }
+        } else {
+            initHero();
+            initGallery();
+        }
+    </script>
+
+    <!--
+        Instructions:
+        1) Create folders: assets/models/
+        2) Add your .glb/.gltf files there (and any textures if using .gltf).
+        3) Update data-model paths in the Gallery cards above.
+        4) Commit and push to GitHub; enable GitHub Pages on your repo.
+    -->
 </body>
 </html>
