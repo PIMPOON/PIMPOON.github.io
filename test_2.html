@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>3D Model Showcase</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --card: #ffffff;
+    --text: #1f2a35;
+    --muted: #6b7a90;
+    --brand1: #6a8dff;
+    --brand2: #00d1b2;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background: radial-gradient(1200px 600px at 10% -10%, #eaf1ff 0%, transparent 60%), var(--bg);
+    color: var(--text);
+  }
+
+  header {
+    padding: 40px 20px 30px;
+    text-align: center;
+    background: linear-gradient(135deg, #1f2a35 0%, #25364a 100%);
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+  }
+  header h1 {
+    margin: 0 0 8px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  header p { margin: 0; opacity: 0.85; }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 28px;
+    padding: 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .model-card {
+    background: var(--card);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(22,34,66,0.10);
+    transition: transform 260ms ease, box-shadow 260ms ease;
+    will-change: transform;
+  }
+  .model-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 46px rgba(22,34,66,0.16);
+  }
+
+  .model-viewer {
+    position: relative;           /* needed for absolute button placement */
+    aspect-ratio: 4 / 3;
+    min-height: 260px;
+    background: linear-gradient(180deg, #f9fbff 0%, #eef3fb 100%);
+  }
+  .model-viewer canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    will-change: transform;
+  }
+
+  .model-info { padding: 18px 18px 20px; }
+  .model-title { margin: 0 0 8px; font-size: 1.1rem; font-weight: 700; }
+  .model-description { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+  .badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    color: white;
+    background: linear-gradient(135deg, var(--brand1), var(--brand2));
+    padding: 5px 10px;
+    border-radius: 999px;
+    margin-left: 10px;
+    vertical-align: middle;
+    opacity: 0.9;
+  }
+
+  /* Reset button — bottom-right corner */
+  .reset-btn {
+    position: absolute;
+    bottom: 10px;         /* ⟵ bottom corner */
+    right: 10px;          /* ⟵ right corner */
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(31,42,53,0.86);
+    color: #fff;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: transform 120ms ease, opacity 120ms ease;
+    opacity: 0.95;
+    z-index: 2;           /* ensure above canvas */
+  }
+  .reset-btn:hover { transform: scale(1.05); opacity: 1; }
+
+  @media (max-width: 600px) {
+    header { padding: 28px 18px; }
+    .gallery { padding: 18px; gap: 20px; }
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>3D Model Showcase <span class="badge">Smooth & Interactive</span></h1>
+    <p>Browse my collection of 3D models with fluid, buttery controls</p>
+  </header>
+
+  <div class="gallery" id="gallery"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/STLLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+
+  <script>
+    const models = [
+      { name: "Paperclip", path: "assets/models/paperclip.stl", description: "A standard paperclip model", color: 0x156289 },
+      { name: "Gear", path: "assets/models/gear.stl", description: "Mechanical gear component", color: 0xE91E63 },
+      { name: "Chess Piece", path: "assets/models/chess.stl", description: "3D printed chess piece", color: 0x4CAF50 },
+      { name: "Bracket", path: "assets/models/bracket.stl", description: "Structural support bracket", color: 0xFF9800 }
+    ];
+
+    const gallery = document.getElementById('gallery');
+
+    class STLCardViewer {
+      constructor(container, model) {
+        this.container = container;
+        this.model = model;
+        this.mesh = null;
+        this.active = false;
+        this.clock = new THREE.Clock();
+        this.isUserInteracting = false;
+        this._initial = null;
+        this._targetRadius = 1.0;
+
+        // Scene
+        this.scene = new THREE.Scene();
+        this.scene.background = new THREE.Color(0xf6f8fc);
+
+        // Camera
+        const w = container.clientWidth || 400;
+        const h = container.clientHeight || 300;
+        this.camera = new THREE.PerspectiveCamera(50, w / h, 0.01, 200);
+        this.camera.position.set(0, 0.3, 3);
+
+        // Renderer (shadows disabled)
+        this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
+        this.renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+        this.renderer.setSize(w, h, false);
+        this.renderer.outputEncoding = THREE.sRGBEncoding;
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.shadowMap.enabled = false;
+        container.appendChild(this.renderer.domElement);
+
+        // Lights (no shadow casting)
+        const hemi = new THREE.HemisphereLight(0xffffff, 0x8899aa, 0.9);
+        this.scene.add(hemi);
+
+        const dir = new THREE.DirectionalLight(0xffffff, 1.0);
+        dir.position.set(3.5, 6, 3);
+        dir.castShadow = false;
+        this.scene.add(dir);
+
+        // Controls
+        this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+        this.controls.enableDamping = true;
+        this.controls.dampingFactor = 0.08;
+        this.controls.rotateSpeed = 0.85;
+        this.controls.zoomSpeed = 0.9;
+        this.controls.minDistance = 0.7;
+        this.controls.maxDistance = 30;
+        this.controls.autoRotate = true;
+        this.controls.autoRotateSpeed = 0.6;
+        this.controls.addEventListener('start', () => { this.isUserInteracting = true; });
+        this.controls.addEventListener('end', () => { this.isUserInteracting = false; });
+
+        // Load STL
+        this.loadModel();
+
+        // Resize
+        this.ro = new ResizeObserver(() => this.onResize());
+        this.ro.observe(container);
+      }
+
+      loadModel() {
+        const loader = new THREE.STLLoader();
+        loader.load(
+          this.model.path,
+          (geometry) => {
+            geometry.computeVertexNormals();
+            geometry.center();
+            geometry.computeBoundingSphere();
+
+            const material = new THREE.MeshStandardMaterial({
+              color: this.model.color || 0x7aa2ff,
+              metalness: 0.06,
+              roughness: 0.55
+            });
+
+            this.mesh = new THREE.Mesh(geometry, material);
+            this.mesh.castShadow = false;
+            this.mesh.receiveShadow = false;
+
+            // Normalize scale
+            const radius = geometry.boundingSphere ? geometry.boundingSphere.radius : 1;
+            this._targetRadius = 1.0;
+            const s = this._targetRadius / radius;
+            this.mesh.scale.setScalar(s);
+
+            // Slight tilt
+            this.mesh.rotation.x = -Math.PI / 12;
+
+            this.scene.add(this.mesh);
+
+            // Save initial transform for Reset
+            this._initial = {
+              position: this.mesh.position.clone(),
+              quaternion: this.mesh.quaternion.clone(),
+              scale: this.mesh.scale.clone()
+            };
+
+            // Fit camera and save control state for resets
+            this.fitCameraToObject(this._targetRadius * 1.3);
+            this.controls.saveState();
+          },
+          undefined,
+          (err) => {
+            const msg = document.createElement('div');
+            msg.textContent = 'Failed to load model.';
+            msg.style.position = 'absolute';
+            msg.style.left = '12px';
+            msg.style.bottom = '12px';
+            msg.style.color = '#e74c3c';
+            msg.style.fontSize = '12px';
+            this.container.appendChild(msg);
+            console.error(err);
+          }
+        );
+      }
+
+      fitCameraToObject(radius) {
+        const fov = this.camera.fov * (Math.PI / 180);
+        const dist = (radius / Math.sin(fov / 2)) * 0.9;
+        this.camera.position.set(0, radius * 0.15, dist);
+        this.controls.target.set(0, 0, 0);
+        this.controls.update();
+      }
+
+      onResize() {
+        const w = this.container.clientWidth || 400;
+        const h = this.container.clientHeight || 300;
+        this.camera.aspect = w / h;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(w, h, false);
+      }
+
+      start() {
+        if (this.active) return;
+        this.active = true;
+        this.clock.start();
+        this.animate();
+      }
+
+      stop() { this.active = false; }
+
+      animate() {
+        if (!this.active) return;
+        const dt = this.clock.getDelta();
+
+        // Subtle breathing motion
+        if (this.mesh && !this.isUserInteracting) {
+          this.mesh.position.y = Math.sin(performance.now() * 0.0012) * 0.03;
+        }
+
+        this.controls.update();
+        this.renderer.render(this.scene, this.camera);
+        requestAnimationFrame(() => this.animate());
+      }
+
+      reset() {
+        if (!this.mesh || !this._initial) return;
+        // Restore mesh transform
+        this.mesh.position.copy(this._initial.position);
+        this.mesh.quaternion.copy(this._initial.quaternion);
+        this.mesh.scale.copy(this._initial.scale);
+        // Restore camera/controls
+        this.controls.reset();   // goes back to saved state
+      }
+
+      dispose() {
+        this.stop();
+        this.ro.disconnect();
+        this.renderer.dispose();
+      }
+    }
+
+    // Build cards and viewers with bottom-right Reset buttons
+    const viewers = new Map();
+    models.forEach((model, index) => {
+      const card = document.createElement('div');
+      card.className = 'model-card';
+
+      const viewerEl = document.createElement('div');
+      viewerEl.className = 'model-viewer';
+      viewerEl.id = `viewer-${index}`;
+
+      // Reset button per viewer (bottom-right)
+      const resetBtn = document.createElement('button');
+      resetBtn.className = 'reset-btn';
+      resetBtn.type = 'button';
+      resetBtn.title = 'Reset view';
+      resetBtn.textContent = '↺';
+      viewerEl.appendChild(resetBtn);
+
+      const info = document.createElement('div');
+      info.className = 'model-info';
+      info.innerHTML = `
+        <h2 class="model-title">${model.name}</h2>
+        <p class="model-description">${model.description}</p>
+      `;
+
+      card.appendChild(viewerEl);
+      card.appendChild(info);
+      gallery.appendChild(card);
+
+      const viewer = new STLCardViewer(viewerEl, model);
+      viewers.set(viewerEl.id, viewer);
+
+      resetBtn.addEventListener('click', () => viewer.reset());
+    });
+
+    // Animate only when visible
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const viewer = viewers.get(entry.target.id);
+          if (!viewer) continue;
+          if (entry.isIntersecting) viewer.start();
+          else viewer.stop();
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    for (const id of viewers.keys()) {
+      const el = document.getElementById(id);
+      io.observe(el);
+    }
+
+    // Start those initially on screen
+    requestAnimationFrame(() => {
+      for (const [id, viewer] of viewers.entries()) {
+        const rect = document.getElementById(id).getBoundingClientRect();
+        const visible = rect.top < window.innerHeight && rect.bottom > 0;
+        if (visible) viewer.start();
+      }
+    });
+  </script>
+</body>
+</html>

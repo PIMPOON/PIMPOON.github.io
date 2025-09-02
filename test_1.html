@@ -1,655 +1,331 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>PIMPOON 3D | 3MF Portfolio & Custom Work</title>
-    <meta name="description" content="Showcase of high-quality 3MF models. Get a custom 3D design or print job.">
-    <meta property="og:title" content="PIMPOON 3D | 3MF Portfolio & Custom Work">
-    <meta property="og:description" content="Showcase of high-quality 3MF models. Get a custom 3D design or print job.">
-    <meta property="og:type" content="website">
-    <meta name="theme-color" content="#0ea5e9">
-    <link rel="preconnect" href="https://unpkg.com">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&display=swap" rel="stylesheet">
-    <style>
-        :root{
-            --bg-0:#0b1020;
-            --bg-1:#0b1226;
-            --bg-2:#0a1b3a;
-            --text:#eaf2ff;
-            --muted:#a8b3c7;
-            --accent:#0ea5e9;
-            --accent-2:#7c3aed;
-            --card:#0f1530aa;
-            --card-2:#0f1636;
-            --ok:#10b981;
-            --warn:#f59e0b;
-            --shadow: 0 10px 30px rgba(0,0,0,.35);
-            --radius:14px;
-            --radius-sm:10px;
-            --glass-bg: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-            --grid-gap:16px;
-        }
-        *{box-sizing:border-box}
-        html,body{height:100%}
-        body{
-            margin:0;
-            font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-            color:var(--text);
-            background:
-                radial-gradient(1200px 600px at 80% -10%, rgba(124,58,237,.25), transparent 50%),
-                radial-gradient(900px 500px at -10% 30%, rgba(14,165,233,.25), transparent 50%),
-                linear-gradient(180deg, var(--bg-1), var(--bg-0) 25%, var(--bg-2) 100%);
-            background-attachment: fixed;
-        }
-        a{color:inherit;text-decoration:none}
-        header{
-            position:sticky; top:0; z-index:20;
-            backdrop-filter:saturate(140%) blur(10px);
-            background:linear-gradient(180deg, rgba(10,14,35,.9), rgba(10,14,35,.6));
-            border-bottom:1px solid rgba(255,255,255,.06);
-        }
-        .nav{
-            max-width:1200px; margin:0 auto; padding:14px 20px;
-            display:flex; align-items:center; justify-content:space-between; gap:24px;
-        }
-        .brand{display:flex; align-items:center; gap:12px; font-weight:900; letter-spacing:.3px}
-        .logo{
-            width:36px; height:36px; border-radius:10px;
-            background: conic-gradient(from 210deg, var(--accent), var(--accent-2));
-            box-shadow: inset 0 0 20px rgba(255,255,255,.15), 0 6px 18px rgba(14,165,233,.35);
-        }
-        .menu{display:flex; gap:18px; align-items:center; flex-wrap:wrap}
-        .menu a{padding:8px 12px; color:var(--muted)}
-        .menu a:hover{color:var(--text)}
-        .btn{
-            display:inline-flex; align-items:center; gap:10px;
-            padding:11px 16px; border-radius:12px; font-weight:600; border:1px solid rgba(255,255,255,.12);
-            background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-            color:var(--text);
-        }
-        .btn.primary{
-            border-color:transparent;
-            background:linear-gradient(180deg, #16a8ea, #0d83c1);
-            box-shadow:0 10px 20px rgba(14,165,233,.35);
-        }
-        .hero{
-            max-width:1200px; margin:40px auto 10px; padding:40px 20px 10px; position:relative;
-        }
-        .hero h1{
-            font-size: clamp(32px, 6vw, 64px);
-            line-height:1.05; margin:10px 0 16px; letter-spacing:-.02em;
-            text-shadow: 0 10px 30px rgba(14,165,233,.15);
-        }
-        .hero p{
-            font-size:clamp(16px, 2vw, 19px);
-            color:var(--muted); max-width:820px; margin:0 0 20px;
-        }
-        .hero-cta{display:flex; gap:12px; flex-wrap:wrap; margin:20px 0 0}
-        .stats{display:flex; gap:22px; margin-top:26px; color:#c8d5f0; flex-wrap:wrap}
-        .stat{padding:8px 12px; border-radius:999px; border:1px solid rgba(255,255,255,.10); background:var(--glass-bg)}
-        .section{
-            max-width:1200px; margin:0 auto; padding:30px 20px 60px;
-        }
-        h2{font-size:clamp(22px, 2.8vw, 32px); margin:0 0 14px}
-        .sub{color:var(--muted); margin:0 0 24px}
-        .grid{
-            display:grid; gap:var(--grid-gap);
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        }
-        .card{
-            border-radius:var(--radius);
-            background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-            border:1px solid rgba(255,255,255,.12);
-            overflow:hidden; box-shadow:var(--shadow);
-            transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-            display:flex; flex-direction:column; min-height:320px;
-        }
-        .card:hover{transform: translateY(-3px); border-color: rgba(14,165,233,.55); box-shadow:0 16px 40px rgba(14,165,233,.15)}
-        .preview{
-            position:relative; aspect-ratio: 16/10; background: radial-gradient(120% 120% at 0% 0%, rgba(14,165,233,.26), transparent 50%), #0b1127;
-            display:grid; place-items:center; overflow:hidden;
-        }
-        .badge{
-            position:absolute; top:10px; left:10px; font-size:12px; letter-spacing:.3px;
-            padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.14);
-            background:var(--glass-bg); color:#d7e6ff;
-        }
-        canvas.thumb{width:100%; height:100%; display:block}
-        .placeholder{
-            width:64px; height:64px; border-radius:14px;
-            background: conic-gradient(from 160deg, rgba(124,58,237,.7), rgba(14,165,233,.8));
-            filter: drop-shadow(0 10px 18px rgba(14,165,233,.25));
-            mask: radial-gradient(circle at 30% 30%, transparent 38%, black 39%);
-        }
-        .content{padding:14px 14px 16px; display:flex; flex-direction:column; gap:8px}
-        .title{font-weight:700}
-        .desc{color:var(--muted); font-size:14px}
-        .tags{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px}
-        .tag{font-size:12px; padding:5px 8px; border-radius:8px; color:#cfe6ff; border:1px solid rgba(255,255,255,.12); background:var(--glass-bg)}
-        .card .actions{margin-top:auto; display:flex; gap:10px; padding:0 14px 14px}
-        .actions .btn{width:100%; justify-content:center; padding:10px 12px}
-        .about{
-            display:grid; grid-template-columns: 1.1fr .9fr; gap:24px; align-items:stretch;
-        }
-        @media (max-width:900px){ .about{grid-template-columns:1fr} }
-        .panel{
-            border-radius:var(--radius);
-            background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-            border:1px solid rgba(255,255,255,.12);
-            padding:18px;
-        }
-        form{display:grid; gap:12px}
-        .field{display:grid; gap:6px}
-        label{font-size:14px; color:#cfe6ff}
-        input, textarea{
-            width:100%; padding:12px 12px; border-radius:10px; color:var(--text);
-            background:#0d1738; border:1px solid rgba(255,255,255,.14); outline:none;
-        }
-        input:focus, textarea:focus{border-color: var(--accent)}
-        textarea{min-height:120px; resize:vertical}
-        footer{border-top:1px solid rgba(255,255,255,.08); color:#9fb0ca}
-        .foot{max-width:1200px; margin:0 auto; padding:26px 20px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap}
-        /* Viewer modal */
-        .viewer{
-            position:fixed; inset:0; display:none; place-items:center; padding:20px; z-index:50;
-            background: rgba(5,8,18,.6); backdrop-filter: blur(12px) saturate(140%);
-        }
-        .viewer.active{display:grid}
-        .viewer .frame{
-            width:min(1100px, 100%); aspect-ratio:16/9; background:#0b1127; border-radius:16px;
-            border:1px solid rgba(255,255,255,.1); position:relative; overflow:hidden;
-            box-shadow: 0 18px 60px rgba(0,0,0,.5);
-        }
-        .viewer .top{
-            position:absolute; inset:10px 10px auto 10px; display:flex; gap:10px; justify-content:space-between; align-items:center;
-        }
-        .viewer .title{
-            font-weight:700; padding:8px 12px; border-radius:10px; background:var(--glass-bg); border:1px solid rgba(255,255,255,.12)
-        }
-        .viewer .close{
-            cursor:pointer; padding:8px 10px; border-radius:10px; border:1px solid rgba(255,255,255,.12);
-            background:linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.05));
-        }
-        .viewer .canvas-wrap, .viewer canvas{width:100%; height:100%; display:block}
-        .note{font-size:12px; color:#9fb0ca}
-        /* Small helper dots background */
-        .dots{
-            position:absolute; inset:auto 0 -120px 0; height:220px; opacity:.6; filter:contrast(120%) saturate(120%);
-            background-image: radial-gradient(rgba(124,58,237,.22) 1px, transparent 1px);
-            background-size: 18px 18px;
-            mask-image: linear-gradient(180deg, rgba(255,255,255,1), rgba(255,255,255,0));
-        }
-        /* Accessibility skip link */
-        .skip{position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden}
-        .skip:focus{position:static; width:auto; height:auto; padding:6px 10px; background:#111a3c; border-radius:8px; margin:8px}
-        /* Tiny shimmer for loading */
-        .shimmer{position:absolute; inset:0; background:linear-gradient(110deg, transparent 0%, rgba(255,255,255,.06) 20%, transparent 40%); background-size:200% 100%; animation:sh 1.2s linear infinite}
-        @keyframes sh{to{background-position-x:-200%}}
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PIMPOON 3D | STL Portfolio & Custom Work</title>
+  <meta name="description" content="Showcase of high-quality STL models. Get a custom 3D design or print job.">
+  <meta property="og:title" content="PIMPOON 3D | STL Portfolio & Custom Work">
+  <meta property="og:description" content="Showcase of high-quality STL models. Get a custom 3D design or print job.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#0ea5e9">
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg-0:#0b1020; --bg-1:#0b1226; --bg-2:#0a1b3a;
+      --text:#eaf2ff; --muted:#a8b3c7; --accent:#0ea5e9; --accent-2:#7c3aed;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius:14px; --glass-bg: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      --grid-gap:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 80% -10%, rgba(124,58,237,.25), transparent 50%),
+        radial-gradient(900px 500px at -10% 30%, rgba(14,165,233,.25), transparent 50%),
+        linear-gradient(180deg, var(--bg-1), var(--bg-0) 25%, var(--bg-2) 100%);
+      background-attachment: fixed;
+    }
+    a{color:inherit;text-decoration:none}
+    header{position:sticky; top:0; z-index:20; backdrop-filter:saturate(140%) blur(10px);
+      background:linear-gradient(180deg, rgba(10,14,35,.9), rgba(10,14,35,.6));
+      border-bottom:1px solid rgba(255,255,255,.06);}
+    .nav{ max-width:1200px; margin:0 auto; padding:14px 20px; display:flex; align-items:center; justify-content:space-between; gap:24px;}
+    .brand{display:flex; align-items:center; gap:12px; font-weight:900; letter-spacing:.3px}
+    .logo{width:36px; height:36px; border-radius:10px; background: conic-gradient(from 210deg, var(--accent), var(--accent-2));
+      box-shadow: inset 0 0 20px rgba(255,255,255,.15), 0 6px 18px rgba(14,165,233,.35); }
+    .menu{display:flex; gap:18px; align-items:center; flex-wrap:wrap}
+    .menu a{padding:8px 12px; color:var(--muted)}
+    .menu a:hover{color:var(--text)}
+    .btn{display:inline-flex; align-items:center; gap:10px; padding:11px 16px; border-radius:12px; font-weight:600;
+      border:1px solid rgba(255,255,255,.12); background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); color:var(--text)}
+    .btn.primary{border-color:transparent; background:linear-gradient(180deg, #16a8ea, #0d83c1); box-shadow:0 10px 20px rgba(14,165,233,.35)}
+
+    .hero{ max-width:1200px; margin:40px auto 10px; padding:40px 20px 10px;}
+    .hero h1{ font-size: clamp(32px, 6vw, 64px); line-height:1.05; margin:10px 0 16px; letter-spacing:-.02em; text-shadow: 0 10px 30px rgba(14,165,233,.15);}
+    .hero p{ font-size:clamp(16px, 2vw, 19px); color:var(--muted); max-width:820px; margin:0 0 20px;}
+    .hero-cta{display:flex; gap:12px; flex-wrap:wrap; margin:20px 0 0}
+    .stats{display:flex; gap:22px; margin-top:26px; color:#c8d5f0; flex-wrap:wrap}
+    .stat{padding:8px 12px; border-radius:999px; border:1px solid rgba(255,255,255,.10); background:var(--glass-bg)}
+
+    .section{ max-width:1200px; margin:0 auto; padding:30px 20px 60px; }
+    h2{font-size:clamp(22px, 2.8vw, 32px); margin:0 0 14px}
+    .sub{color:var(--muted); margin:0 0 24px}
+
+    .grid{ display:grid; gap:var(--grid-gap); grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+    .card{ border-radius:var(--radius); background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.12); overflow:hidden; box-shadow:var(--shadow);
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+      display:flex; flex-direction:column; min-height:320px; }
+    .card:hover{transform: translateY(-3px); border-color: rgba(14,165,233,.55); box-shadow:0 16px 40px rgba(14,165,233,.15)}
+
+    .preview{ position:relative; aspect-ratio: 16/10; background: radial-gradient(120% 120% at 0% 0%, rgba(14,165,233,.26), transparent 50%), #0b1127;
+      display:grid; place-items:center; overflow:hidden; }
+    .badge{ position:absolute; top:10px; left:10px; font-size:12px; letter-spacing:.3px; padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.14); background:var(--glass-bg); color:#d7e6ff; z-index:2; }
+
+    .content{padding:14px 14px 16px; display:flex; flex-direction:column; gap:8px}
+    .title{font-weight:700}
+    .desc{color:var(--muted); font-size:14px}
+    .tags{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px}
+    .tag{font-size:12px; padding:5px 8px; border-radius:8px; color:#cfe6ff; border:1px solid rgba(255,255,255,.12); background:var(--glass-bg)}
+    .card .actions{margin-top:auto; display:flex; gap:10px; padding:0 14px 14px}
+    .actions .btn{width:100%; justify-content:center; padding:10px 12px}
+
+    /* Reset button bottom-right */
+    .reset-btn{
+      position:absolute; right:10px; bottom:10px; width:36px; height:36px; border-radius:50%; border:0;
+      background: rgba(31,42,53,0.86); color:#fff; font-size:16px; cursor:pointer;
+      display:grid; place-items:center; box-shadow:0 4px 12px rgba(0,0,0,0.25);
+      opacity:.95; transition: transform .12s ease, opacity .12s ease; z-index:2;
+    }
+    .reset-btn:hover{ transform:scale(1.05); opacity:1; }
+
+    footer{border-top:1px solid rgba(255,255,255,.08); color:#9fb0ca}
+    .foot{max-width:1200px; margin:0 auto; padding:26px 20px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap}
+  </style>
 </head>
 <body>
-    <a class="skip" href="#portfolio">Skip to portfolio</a>
-    <header>
-        <nav class="nav" aria-label="Primary">
-            <div class="brand">
-                <span class="logo" aria-hidden="true"></span>
-                <span>PIMPOON 3D</span>
-            </div>
-            <div class="menu">
-                <a href="#portfolio">Portfolio</a>
-                <a href="#services">Services</a>
-                <a href="#contact">Contact</a>
-                <a class="btn" href="mailto:hello@yourdomain.tld">Email</a>
-            </div>
-        </nav>
-    </header>
+  <header>
+    <nav class="nav" aria-label="Primary">
+      <div class="brand"><span class="logo" aria-hidden="true"></span><span>PIMPOON 3D</span></div>
+      <div class="menu">
+        <a href="#portfolio">Portfolio</a><a href="#services">Services</a><a href="#contact">Contact</a>
+        <a class="btn" href="mailto:hello@yourdomain.tld">Email</a>
+      </div>
+    </nav>
+  </header>
 
-    <main>
-        <section class="hero" aria-labelledby="hero-title">
-            <h1 id="hero-title">Premium 3MF models and custom 3D work</h1>
-            <p>Clean geometry, print‑ready files, and tailored engineering. Browse selected 3MF projects below or send your brief for a custom model or print.</p>
-            <div class="hero-cta">
-                <a class="btn primary" href="#portfolio">View portfolio</a>
-                <a class="btn" href="#contact">Request a custom quote</a>
-            </div>
-            <div class="stats">
-                <div class="stat">✓ Print‑ready 3MF</div>
-                <div class="stat">PBR preview</div>
-                <div class="stat">Rapid turnaround</div>
-            </div>
-        </section>
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <h1 id="hero-title">Premium STL models and custom 3D work</h1>
+      <p>Clean geometry, print-ready files, and tailored engineering. Browse selected STL projects below or send your brief for a custom model or print.</p>
+      <div class="hero-cta"><a class="btn primary" href="#portfolio">View portfolio</a><a class="btn" href="#contact">Request a custom quote</a></div>
+      <div class="stats"><div class="stat">✓ Print-ready STL</div><div class="stat">Realtime preview</div><div class="stat">Rapid turnaround</div></div>
+    </section>
 
-        <section id="portfolio" class="section" aria-labelledby="pf-title">
-            <h2 id="pf-title">Featured 3MF portfolio</h2>
-            <p class="sub">Models are interactive. Click any tile to inspect in the full 3D viewer.</p>
+    <section id="portfolio" class="section" aria-labelledby="pf-title">
+      <h2 id="pf-title">Featured STL portfolio</h2>
+      <p class="sub">Models are interactive. Use mouse/touch to orbit, scroll to zoom. Click ↺ to reset the view.</p>
 
-            <div class="grid" id="grid">
-                <!-- Replace data-model with your 3MF paths on this site (same origin). Add more items by duplicating the card. -->
-                <article class="card" tabindex="0" role="button" aria-label="Open 3D viewer: Parametric Gear" data-model="/assets/models/gear.3mf" data-title="Parametric Gear">
-                    <div class="preview">
-                        <span class="badge">3MF</span>
-                        <div class="shimmer" aria-hidden="true"></div>
-                        <div class="placeholder" aria-hidden="true"></div>
-                    </div>
-                    <div class="content">
-                        <div class="title">Parametric Gear</div>
-                        <div class="desc">Precision gear with chamfers and proper backlash. Tuned for FDM printability.</div>
-                        <div class="tags">
-                            <span class="tag">Engineering</span>
-                            <span class="tag">FDM</span>
-                            <span class="tag">Tolerance‑aware</span>
-                        </div>
-                    </div>
-                    <div class="actions">
-                        <button class="btn primary open-3d">Open 3D</button>
-                        <a class="btn" download href="/assets/models/gear.3mf">Download</a>
-                    </div>
-                </article>
+      <div class="grid" id="grid">
+        <!-- IMPORTANT: relative paths (no leading slash) -->
+        <article class="card" data-model="assets/models/gear.stl" data-title="Parametric Gear" data-color="#cfe6ff">
+          <div class="preview"><span class="badge">STL</span></div>
+          <div class="content">
+            <div class="title">Parametric Gear</div>
+            <div class="desc">Precision gear with chamfers and proper backlash. Tuned for FDM printability.</div>
+            <div class="tags"><span class="tag">Engineering</span><span class="tag">FDM</span><span class="tag">Tolerance-aware</span></div>
+          </div>
+          <div class="actions"><a class="btn primary" download href="assets/models/gear.stl">Download</a></div>
+        </article>
 
-                <article class="card" tabindex="0" role="button" aria-label="Open 3D viewer: Paperclip" data-model="/assets/models/Paperclip.3mf" data-title="Sculpted Figurine">
-                    <div class="preview">
-                        <span class="badge">3MF</span>
-                        <div class="shimmer" aria-hidden="true"></div>
-                        <div class="placeholder" aria-hidden="true"></div>
-                    </div>
-                    <div class="content">
-                        <div class="title">Paperclip</div>
-                        <div class="desc">High‑detail organic sculpt, hollowed with drain holes and custom supports.</div>
-                        <div class="tags">
-                            <span class="tag">SLA/DLP</span>
-                            <span class="tag">Hollowed</span>
-                            <span class="tag">Supports</span>
-                        </div>
-                    </div>
-                    <div class="actions">
-                        <button class="btn primary open-3d">Open 3D</button>
-                        <a class="btn" download href="/assets/models/Paperclip.3mf">Download</a>
-                    </div>
-                </article>
+        <article class="card" data-model="assets/models/Paperclip.stl" data-title="Paperclip" data-color="#d9e4ff">
+          <div class="preview"><span class="badge">STL</span></div>
+          <div class="content">
+            <div class="title">Paperclip</div>
+            <div class="desc">Simple, clean geometry — great example piece for STL viewing.</div>
+            <div class="tags"><span class="tag">Example</span><span class="tag">Minimal</span><span class="tag">Drag-to-orbit</span></div>
+          </div>
+          <div class="actions"><a class="btn primary" download href="assets/models/Paperclip.stl">Download</a></div>
+        </article>
 
-                <article class="card" tabindex="0" role="button" aria-label="Open 3D viewer: Phone Stand" data-model="/assets/models/phone-stand.3mf" data-title="Phone Stand">
-                    <div class="preview">
-                        <span class="badge">3MF</span>
-                        <div class="shimmer" aria-hidden="true"></div>
-                        <div class="placeholder" aria-hidden="true"></div>
-                    </div>
-                    <div class="content">
-                        <div class="title">Phone Stand</div>
-                        <div class="desc">Lightweight lattice, minimal material use, printable without supports.</div>
-                        <div class="tags">
-                            <span class="tag">Functional</span>
-                            <span class="tag">Optimized</span>
-                            <span class="tag">No‑supports</span>
-                        </div>
-                    </div>
-                    <div class="actions">
-                        <button class="btn primary open-3d">Open 3D</button>
-                        <a class="btn" download href="/assets/models/phone-stand.3mf">Download</a>
-                    </div>
-                </article>
-            </div>
-            <div class="dots" aria-hidden="true"></div>
-            <p class="note">Tip: Place your .3mf files under /assets/models/ and update the paths. Thumbnails are generated on-the-fly in the browser.</p>
-        </section>
+        <article class="card" data-model="assets/models/phone-stand.stl" data-title="Phone Stand" data-color="#e4fbff">
+          <div class="preview"><span class="badge">STL</span></div>
+          <div class="content">
+            <div class="title">Phone Stand</div>
+            <div class="desc">Lightweight lattice, minimal material use, printable without supports.</div>
+            <div class="tags"><span class="tag">Functional</span><span class="tag">Optimized</span><span class="tag">No-supports</span></div>
+          </div>
+          <div class="actions"><a class="btn primary" download href="assets/models/phone-stand.stl">Download</a></div>
+        </article>
+      </div>
+    </section>
+  </main>
 
-        <section id="services" class="section" aria-labelledby="svc-title">
-            <h2 id="svc-title">Services</h2>
-            <div class="about">
-                <div class="panel">
-                    <ul>
-                        <li>Custom 3D modeling from brief, sketch, or reference</li>
-                        <li>3MF deliverables tuned for FDM or resin printing</li>
-                        <li>DFM checks: wall thickness, overhangs, tolerances</li>
-                        <li>Cleanup: watertightness, decimation, mesh repair</li>
-                        <li>Rapid prototyping and short‑run printing</li>
-                    </ul>
-                </div>
-                <div class="panel">
-                    <h3 style="margin-top:0">Why 3MF</h3>
-                    <p class="sub">3MF stores units, colors, materials, and slice‑ready configurations. It’s the preferred format for precise, repeatable prints.</p>
-                    <ul>
-                        <li>Preserves print settings and assemblies</li>
-                        <li>Smaller files vs. STL with rich metadata</li>
-                        <li>Ideal handoff between CAD and slicers</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
+  <footer>
+    <div class="foot"><div>&copy; <span id="y"></span> PIMPOON 3D</div><div>Built with Three.js STL viewer</div></div>
+  </footer>
 
-        <section id="contact" class="section" aria-labelledby="contact-title">
-            <h2 id="contact-title">Request a custom job</h2>
-            <p class="sub">Describe your project and target printer. Attach references or dimensions and I’ll reply with a fixed quote.</p>
-            <div class="about">
-                <div class="panel">
-                    <!-- Replace the Formspree action with your endpoint or use mailto as needed -->
-                    <form action="https://formspree.io/f/your-id" method="POST">
-                        <div class="field">
-                            <label for="name">Name</label>
-                            <input id="name" name="name" placeholder="Your name" required />
-                        </div>
-                        <div class="field">
-                            <label for="email">Email</label>
-                            <input id="email" name="email" type="email" placeholder="you@example.com" required />
-                        </div>
-                        <div class="field">
-                            <label for="printer">Printer/material (optional)</label>
-                            <input id="printer" name="printer" placeholder="e.g., Prusa MK4, PLA+" />
-                        </div>
-                        <div class="field">
-                            <label for="message">Project details</label>
-                            <textarea id="message" name="message" placeholder="What do you need modeled or printed? Dimensions, tolerances, deadlines…" required></textarea>
-                        </div>
-                        <button class="btn primary" type="submit">Send request</button>
-                        <div class="note">Or email: <a href="mailto:hello@yourdomain.tld">hello@yourdomain.tld</a></div>
-                    </form>
-                </div>
-                <div class="panel">
-                    <h3 style="margin-top:0">Working process</h3>
-                    <ol>
-                        <li>Brief & quote: share requirements and constraints</li>
-                        <li>Draft: low‑poly or mock to validate fit and function</li>
-                        <li>Final: production 3MF, print profile, and notes</li>
-                    </ol>
-                    <p class="note">NDA available upon request. Commercial licensing offered.</p>
-                </div>
-            </div>
-        </section>
-    </main>
+  <!-- STL per-card viewers -->
+  <script type="module">
+    import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+    import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+    import { STLLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/STLLoader.js';
 
-    <div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-labelledby="viewer-title">
-        <div class="frame">
-            <div class="top">
-                <div id="viewer-title" class="title">3D Viewer</div>
-                <button class="close" id="viewer-close" aria-label="Close">Close</button>
-            </div>
-            <div class="canvas-wrap" id="viewer-canvas" aria-live="polite"></div>
-        </div>
-    </div>
+    const yearEl = document.getElementById('y');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-    <footer>
-        <div class="foot">
-            <div>&copy; <span id="y"></span> PIMPOON 3D</div>
-            <div>Built with Three.js 3MF viewer</div>
-        </div>
-    </footer>
+    class STLCardViewer {
+      constructor(container, url, colorHex) {
+        this.container = container; this.url = url; this.mesh = null;
+        this.active = false; this.clock = new THREE.Clock(); this.isUserInteracting = false;
+        this._initial = null; this._targetRadius = 1.0;
 
-    <script type="module">
-        // 3MF preview + modal viewer
-        import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
-        import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
-        import { ThreeMFLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/3MFLoader.js';
+        this.scene = new THREE.Scene();
+        this.scene.background = new THREE.Color('#0b1127');
 
-        const yearEl = document.getElementById('y');
-        if (yearEl) yearEl.textContent = new Date().getFullYear();
+        const w = Math.max(container.clientWidth, 10);
+        const h = Math.max(container.clientHeight, 10);
+        this.camera = new THREE.PerspectiveCamera(50, w/h, 0.01, 200);
+        this.camera.position.set(0, 0.3, 3);
 
-        const grid = document.getElementById('grid');
-        const viewer = document.getElementById('viewer');
-        const viewerTitle = document.getElementById('viewer-title');
-        const viewerClose = document.getElementById('viewer-close');
-        const viewerCanvasWrap = document.getElementById('viewer-canvas');
+        this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+        this.renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+        this.renderer.setSize(w, h, false);
+        this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.shadowMap.enabled = false;
+        container.appendChild(this.renderer.domElement);
 
-        const loader = new ThreeMFLoader();
+        const hemi = new THREE.HemisphereLight(0xffffff, 0x8899aa, 0.9);
+        const dir = new THREE.DirectionalLight(0xffffff, 1.0); dir.position.set(3.5, 6, 3);
+        this.scene.add(hemi, dir);
 
-        // Helpers
-        function fitCameraToObject(camera, object, controls, fitOffset = 1.2) {
-            const box = new THREE.Box3().setFromObject(object);
-            const size = box.getSize(new THREE.Vector3());
-            const center = box.getCenter(new THREE.Vector3());
+        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.controls.enableDamping = true; this.controls.dampingFactor = 0.08;
+        this.controls.rotateSpeed = 0.85; this.controls.zoomSpeed = 0.9;
+        this.controls.minDistance = 0.7; this.controls.maxDistance = 30;
+        this.controls.autoRotate = true; this.controls.autoRotateSpeed = 0.6;
+        this.controls.addEventListener('start', () => { this.isUserInteracting = true; });
+        this.controls.addEventListener('end', () => { this.isUserInteracting = false; });
 
-            const maxSize = Math.max(size.x, size.y, size.z);
-            const fov = camera.fov * (Math.PI / 180);
-            let cameraZ = Math.abs(maxSize / (2 * Math.tan(fov / 2)));
-            cameraZ *= fitOffset;
+        this.loadModel(colorHex);
 
-            camera.position.set(center.x + maxSize * .6, center.y + maxSize * .5, center.z + cameraZ);
-            camera.near = maxSize / 100;
-            camera.far = maxSize * 100;
-            camera.updateProjectionMatrix();
+        this.ro = new ResizeObserver(() => this.onResize());
+        this.ro.observe(container);
+      }
 
-            if (controls) {
-                controls.target.copy(center);
-                controls.update();
-            }
-        }
+      loadModel(colorHex) {
+        const loader = new STLLoader();
+        loader.load(
+          this.url,
+          (geometry) => {
+            geometry.computeVertexNormals();
+            geometry.center();
+            geometry.computeBoundingSphere();
 
-        async function loadModel(url) {
-            return await loader.loadAsync(url);
-        }
-
-        // Thumbnail generator: loads model, renders one frame, disposes
-        async function makeThumbnail(card) {
-            const url = card.dataset.model;
-            if (!url || card.dataset.thumbReady === '1') return;
-
-            const preview = card.querySelector('.preview');
-            if (!preview) return;
-
-            const width = preview.clientWidth || 480;
-            const height = preview.clientHeight || Math.floor(width * 10/16);
-            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.setSize(width, height);
-            renderer.outputColorSpace = THREE.SRGBColorSpace;
-            renderer.domElement.classList.add('thumb');
-
-            const scene = new THREE.Scene();
-            scene.background = new THREE.Color('#0b1127');
-
-            const camera = new THREE.PerspectiveCamera(45, width / height, 0.01, 1000);
-            scene.add(camera);
-
-            const hemi = new THREE.HemisphereLight(0xffffff, 0x3b3b4a, .9);
-            const dir1 = new THREE.DirectionalLight(0xffffff, .9);
-            dir1.position.set(3,4,5);
-            const dir2 = new THREE.DirectionalLight(0x88c7ff, .4);
-            dir2.position.set(-4,2,-2);
-            scene.add(hemi, dir1, dir2);
-
-            let model;
-            try {
-                model = await loadModel(url);
-            } catch (e) {
-                console.warn('3MF thumb load failed:', e);
-                preview.innerHTML = '<div style="padding:14px;color:#fca5a5">Preview failed. Click to open.</div>';
-                renderer.dispose();
-                return;
-            }
-
-            const root = new THREE.Group();
-            root.add(model);
-            scene.add(root);
-
-            // Subtle material enhancement for preview
-            root.traverse(obj => {
-                if (obj.isMesh) {
-                    obj.castShadow = obj.receiveShadow = true;
-                    if (!obj.material || obj.material.isMeshStandardMaterial !== true) {
-                        obj.material = new THREE.MeshStandardMaterial({ color: 0xcfe6ff, metalness: .1, roughness: .6 });
-                    } else {
-                        obj.material.metalness = Math.min(.7, obj.material.metalness ?? .2);
-                        obj.material.roughness = Math.max(.2, obj.material.roughness ?? .5);
-                    }
-                }
+            const material = new THREE.MeshStandardMaterial({
+              color: new THREE.Color(colorHex || '#cfe6ff'), metalness: 0.06, roughness: 0.55
             });
 
-            fitCameraToObject(camera, root, null, 1.35);
-            renderer.render(scene, camera);
+            this.mesh = new THREE.Mesh(geometry, material);
+            this.mesh.castShadow = false; this.mesh.receiveShadow = false;
 
-            // Clean previous children and insert canvas
-            preview.innerHTML = '';
-            preview.appendChild(renderer.domElement);
+            const radius = geometry.boundingSphere ? geometry.boundingSphere.radius : 1;
+            const s = (this._targetRadius / Math.max(radius, 1e-6));
+            this.mesh.scale.setScalar(s);
+            this.mesh.rotation.x = -Math.PI / 12;
 
-            // Dispose to save memory
-            renderer.dispose();
-            scene.traverse(obj => {
-                if (obj.isMesh && obj.geometry) obj.geometry.dispose?.();
-            });
+            this.scene.add(this.mesh);
 
-            card.dataset.thumbReady = '1';
-        }
-
-        // Intersection observer to lazy-generate thumbs
-        const io = new IntersectionObserver((entries) => {
-            entries.forEach(e => {
-                if (e.isIntersecting) {
-                    makeThumbnail(e.target);
-                    io.unobserve(e.target);
-                }
-            });
-        }, { rootMargin: '200px' });
-
-        document.querySelectorAll('.card').forEach(card => io.observe(card));
-
-        // Modal 3D viewer
-        let vRenderer, vScene, vCamera, vControls, vAnimId, vCurrentModel;
-
-        async function openViewer(url, title) {
-            closeViewer(true);
-
-            viewerTitle.textContent = title || '3D Viewer';
-            viewer.classList.add('active');
-
-            const rect = viewerCanvasWrap.getBoundingClientRect();
-            vRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            vRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            vRenderer.setSize(rect.width, rect.height);
-            vRenderer.outputColorSpace = THREE.SRGBColorSpace;
-            viewerCanvasWrap.innerHTML = '';
-            viewerCanvasWrap.appendChild(vRenderer.domElement);
-
-            vScene = new THREE.Scene();
-            vScene.background = new THREE.Color('#0b1127');
-
-            vCamera = new THREE.PerspectiveCamera(50, rect.width / rect.height, 0.01, 2000);
-            vScene.add(vCamera);
-
-            const hemi = new THREE.HemisphereLight(0xffffff, 0x404050, .9);
-            const key = new THREE.DirectionalLight(0xffffff, 1.0); key.position.set(5,6,7);
-            const rim = new THREE.DirectionalLight(0x7cc4ff, .6); rim.position.set(-5,3,-4);
-            vScene.add(hemi, key, rim);
-
-            vControls = new OrbitControls(vCamera, vRenderer.domElement);
-            vControls.enableDamping = true;
-            vControls.dampingFactor = 0.05;
-            vControls.enablePan = true;
-
-            try {
-                vCurrentModel = await loadModel(url);
-            } catch (e) {
-                viewerCanvasWrap.innerHTML = '<div style="color:#fca5a5;padding:18px">Failed to load 3MF. Check the file path.</div>';
-                console.error(e);
-                return;
-            }
-
-            const root = new THREE.Group();
-            root.add(vCurrentModel);
-            vScene.add(root);
-
-            root.traverse(obj => {
-                if (obj.isMesh) {
-                    obj.castShadow = obj.receiveShadow = true;
-                    if (!obj.material || obj.material.isMeshStandardMaterial !== true) {
-                        obj.material = new THREE.MeshStandardMaterial({ color: 0xd8e7ff, metalness: .2, roughness: .5 });
-                    }
-                }
-            });
-
-            fitCameraToObject(vCamera, root, vControls, 1.25);
-
-            const clock = new THREE.Clock();
-            const animate = () => {
-                vAnimId = requestAnimationFrame(animate);
-                const t = clock.getElapsedTime();
-                // subtle auto-rotate when idle
-                if (!vControls.dragging) {
-                    const target = vControls.target;
-                    vCamera.position.applyAxisAngle(new THREE.Vector3(0,1,0), 0.002);
-                    vCamera.lookAt(target);
-                }
-                vControls.update();
-                vRenderer.render(vScene, vCamera);
+            this._initial = {
+              position: this.mesh.position.clone(),
+              quaternion: this.mesh.quaternion.clone(),
+              scale: this.mesh.scale.clone()
             };
-            animate();
 
-            window.addEventListener('resize', onViewerResize, { passive: true });
+            this.fitCameraToObject(this._targetRadius * 1.3);
+            this.controls.saveState();
+          },
+          undefined,
+          (err) => {
+            const msg = document.createElement('div');
+            msg.textContent = 'Failed to load STL (check path).';
+            msg.style.position = 'absolute'; msg.style.left = '12px'; msg.style.bottom = '12px';
+            msg.style.color = '#fca5a5'; msg.style.fontSize = '12px';
+            this.container.appendChild(msg);
+            console.error('STL load error:', err);
+          }
+        );
+      }
+
+      fitCameraToObject(radius) {
+        const fov = this.camera.fov * (Math.PI / 180);
+        const dist = (radius / Math.sin(fov / 2)) * 0.9;
+        this.camera.position.set(0, radius * 0.15, dist);
+        this.controls.target.set(0, 0, 0);
+        this.controls.update();
+      }
+
+      onResize() {
+        const w = Math.max(this.container.clientWidth, 10);
+        const h = Math.max(this.container.clientHeight, 10);
+        this.camera.aspect = w / h; this.camera.updateProjectionMatrix();
+        this.renderer.setSize(w, h, false);
+      }
+
+      start() { if (!this.active) { this.active = true; this.clock.start(); this.animate(); } }
+      stop() { this.active = false; }
+
+      animate() {
+        if (!this.active) return;
+        if (this.mesh && !this.isUserInteracting) {
+          this.mesh.position.y = Math.sin(performance.now() * 0.0012) * 0.03;
         }
+        this.controls.update();
+        this.renderer.render(this.scene, this.camera);
+        requestAnimationFrame(() => this.animate());
+      }
 
-        function onViewerResize() {
-            if (!vRenderer || !vCamera) return;
-            const r = viewerCanvasWrap.getBoundingClientRect();
-            vCamera.aspect = r.width / r.height;
-            vCamera.updateProjectionMatrix();
-            vRenderer.setSize(r.width, r.height);
-        }
+      reset() {
+        if (!this.mesh || !this._initial) return;
+        this.mesh.position.copy(this._initial.position);
+        this.mesh.quaternion.copy(this._initial.quaternion);
+        this.mesh.scale.copy(this._initial.scale);
+        this.controls.reset();
+      }
+    }
 
-        function closeViewer(immediate = false) {
-            cancelAnimationFrame(vAnimId);
-            window.removeEventListener('resize', onViewerResize);
+    // Build viewers
+    const viewers = new Map();
+    document.querySelectorAll('#grid .card').forEach(card => {
+      const url = card.dataset.model; if (!url) return;
+      const color = card.dataset.color || '#cfe6ff';
+      const preview = card.querySelector('.preview');
 
-            if (vScene) {
-                vScene.traverse(obj => {
-                    if (obj.isMesh) {
-                        obj.geometry?.dispose?.();
-                        if (obj.material?.dispose) obj.material.dispose();
-                    }
-                });
-            }
-            vRenderer?.dispose?.();
-            vRenderer = null; vScene = null; vCamera = null; vControls = null; vCurrentModel = null;
+      const resetBtn = document.createElement('button');
+      resetBtn.className = 'reset-btn'; resetBtn.type = 'button';
+      resetBtn.title = 'Reset view'; resetBtn.textContent = '↺';
+      preview.appendChild(resetBtn);
 
-            if (immediate) {
-                viewerCanvasWrap.innerHTML = '';
-                viewer.classList.remove('active');
-            } else {
-                viewer.classList.remove('active');
-                setTimeout(() => viewerCanvasWrap.innerHTML = '', 200);
-            }
-        }
+      const viewer = new STLCardViewer(preview, url, color);
+      viewers.set(preview, viewer);
+      resetBtn.addEventListener('click', (e) => { e.stopPropagation(); viewer.reset(); });
+    });
 
-        // Wire up cards
-        function handleOpenFromCard(card) {
-            const url = card.dataset.model;
-            const title = card.dataset.title || '3D Model';
-            if (!url) return;
-            openViewer(url, title);
-        }
+    // Animate only when visible
+    const io = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        const viewer = viewers.get(entry.target);
+        if (!viewer) continue;
+        if (entry.isIntersecting) viewer.start(); else viewer.stop();
+      }
+    }, { threshold: 0.2 });
 
-        grid.addEventListener('click', (e) => {
-            const btn = e.target.closest('.open-3d');
-            const card = e.target.closest('.card');
-            if (btn && card) {
-                handleOpenFromCard(card);
-            } else if (card && e.target.closest('.actions') == null) {
-                handleOpenFromCard(card);
-            }
-        });
+    for (const [previewEl] of viewers.entries()) io.observe(previewEl);
 
-        grid.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                const card = e.target.closest('.card');
-                if (card) {
-                    e.preventDefault();
-                    handleOpenFromCard(card);
-                }
-            }
-        });
+    // Start those initially on screen
+    requestAnimationFrame(() => {
+      for (const [previewEl, viewer] of viewers.entries()) {
+        const r = previewEl.getBoundingClientRect();
+        if (r.top < innerHeight && r.bottom > 0) viewer.start();
+      }
+    });
 
-        viewerClose.addEventListener('click', () => closeViewer());
-        viewer.addEventListener('click', (e) => {
-            if (e.target === viewer) closeViewer();
-        });
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && viewer.classList.contains('active')) closeViewer();
-        });
-    </script>
+    // Footer year
+    const y = document.getElementById('y'); if (y) y.textContent = new Date().getFullYear();
+  </script>
 
-    <!--
-        How to add your models:
-        1) Put your .3mf files under /assets/models/ (or any same-origin folder).
-        2) Duplicate a .card, set data-model to the file, and data-title for display.
-        3) Thumbnails are generated automatically upon scroll into view.
-    -->
+  <!--
+    Notes:
+    • Use relative paths like "assets/models/gear.stl" on GitHub Pages project sites.
+    • Filenames are case-sensitive. Encode spaces/#: "Day%20%233%20-%20Paperclip.stl".
+    • If you open the file from disk (file://), run a local server (e.g., `python -m http.server`).
+  -->
 </body>
 </html>
